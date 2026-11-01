@@ -1,15 +1,19 @@
 # E-Commerce Data Warehouse & Revenue Optimization Dashboard
 
+A portfolio-ready analytics project that builds a star-schema data warehouse for e-commerce sales, creates a SQL reporting layer, and supports an executive Power BI dashboard for operational and revenue insight.
+
 ## 📊 Live Project Links
-[![Power BI](https://shields.io/badge/Power%20BI-Report-FFB000?logo=microsoftpowerpoint&logoColor=white)](YOUR_PUBLIC_POWER_BI_WEB_URL)
+[![Power BI](https://shields.io/badge/Power%20BI-Report-FFB000?logo=microsoftpowerpoint&logoColor=white)](https://app.powerbi.com/view?r=YOUR_PUBLIC_REPORT_URL)
 [![Notion Portfolio](https://shields.io/badge/Portfolio-Notion-000000?logo=notion&logoColor=white)](YOUR_NOTION_PORTFOLIO_URL)
 
 ---
 
 ## 📌 Executive Summary
-This project establishes a scalable e-commerce analytics foundation designed to transform transactional sales data into a structured, decision-ready data warehouse. By organizing the source data into a star schema and layering a reporting model on top, the solution provides executives with visibility into sales revenue, customer behavior, product profitability, and operational performance.
+
+This project establishes a scalable e-commerce analytics foundation designed to transform transactional sales data into a structured, decision-ready data warehouse. By organizing source sales information into a star schema and layering a reporting model on top, the solution provides leadership with visibility into revenue, customer behavior, product profitability, and operational performance.
 
 The warehouse supports:
+
 - Revenue and margin monitoring
 - Customer segment analysis
 - Product profitability assessment
@@ -21,6 +25,7 @@ The architecture is designed to be easy to extend, clean to understand, and suit
 ---
 
 ## 🏗️ Data Architecture
+
 The schema follows a classic star model with one fact table and multiple dimensions.
 
 ```text
@@ -132,6 +137,7 @@ The schema follows a classic star model with one fact table and multiple dimensi
 ---
 
 ## ⚙️ ETL & Data Generation
+
 The project includes a Python generator that creates realistic mock data across a three-year period.
 
 ### Data generation logic
@@ -153,6 +159,7 @@ The project includes a Python generator that creates realistic mock data across 
 ---
 
 ## 🧠 Business Use Cases
+
 This warehouse enables analysis in several key business areas:
 
 - Revenue trend monitoring
@@ -167,12 +174,14 @@ This warehouse enables analysis in several key business areas:
 ## 📊 Power BI Dashboard Blueprint
 
 ### Page 1: Executive Overview
-- KPI cards for:
-  - Total Revenue
-  - Gross Profit
-  - Gross Margin %
-  - Revenue YoY %
-  - Fulfillment Rate %
+KPI cards for:
+- Total Revenue
+- Gross Profit
+- Gross Margin %
+- Revenue YoY %
+- Fulfillment Rate %
+
+Visuals:
 - Revenue trend by month
 - Revenue by category
 - New vs Returning customer mix
@@ -200,6 +209,7 @@ This warehouse enables analysis in several key business areas:
 ---
 
 ## 🏎️ Key DAX Measures
+
 ```dax
 Total Revenue = SUM(FactSales[SalesAmount])
 ```
@@ -261,6 +271,7 @@ DIVIDE(
 ---
 
 ## 🧾 SQL Reporting Layer
+
 The reporting layer is built as a flattened view for analysis and Power BI consumption:
 
 ```sql
@@ -301,7 +312,9 @@ LEFT JOIN public."DimProduct" p
 ---
 
 ## 📈 Executive Insights
+
 This dashboard enables stakeholders to:
+
 - identify most profitable product lines
 - evaluate growth against prior-period benchmarks
 - measure customer retention versus new customer acquisition
@@ -312,7 +325,9 @@ This dashboard enables stakeholders to:
 ---
 
 ## ✅ Project Outcome
+
 The final output is a clean, scalable analytics foundation that combines:
+
 - a star schema warehouse
 - realistic generated sales data
 - SQL reporting layer
@@ -324,9 +339,42 @@ This project is well suited for portfolio presentation, analytics case studies, 
 ---
 
 ## 🚀 Suggested Next Steps
+
 1. Load the CSVs into PostgreSQL
 2. Create the reporting view
 3. Connect Power BI to the SQL database
 4. Build the executive dashboard pages
 5. Review dashboard metrics with business stakeholders
 6. Present the project as a case study or portfolio asset
+
+---
+
+## 📁 Repository Contents
+
+- `schema.sql` — PostgreSQL warehouse schema
+- `reporting_view.sql` — reporting layer and analytical queries
+- `dashboard_blueprint.md` — Power BI dashboard design
+- `generate_mock_data.py` — mock e-commerce data generation
+- `load_data_postgres.sql` — PostgreSQL CSV import configuration
+- `README.md` — project overview and documentation
+
+---
+
+## 🧩 Project Impact
+
+This project turns raw transactional sales data into a decision-ready analytics foundation. It supports executive reviews, product performance analysis, customer segmentation insights, and operational monitoring across revenue, margin, and fulfillment metrics.
+
+Business applications include:
+- revenue and profitability monitoring
+- customer retention analysis
+- product performance evaluation
+- regional demand analysis
+- fulfillment health tracking
+
+This project is designed to showcase end-to-end analytics capability and is suitable for portfolio presentation, BI applications, and case studies.
+
+---
+
+## 👤 Author
+
+GitHub: @godmanluis
