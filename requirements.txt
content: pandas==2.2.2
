@@ -1,0 +1,232 @@
+# E-Commerce Data Warehouse & Revenue Optimization Dashboard
+
+A portfolio-ready analytics project that builds a star-schema data warehouse for e-commerce sales, creates a SQL reporting layer, and outlines a Power BI executive dashboard for operational and revenue insight.
+
+## Project summary
+
+This project demonstrates end-to-end business intelligence work: data modeling, mock data generation, SQL warehousing, BI-ready reporting, and dashboard design. It is designed to showcase analytical thinking for portfolio presentations, case studies, and strategic data storytelling.
+
+## Business value
+
+The solution helps stakeholders answer questions such as:
+
+- Which products and categories generate the most revenue and margin?
+- Are sales growing year over year?
+- Which customer segments are most valuable?
+- Which regions are driving demand?
+- How healthy is fulfillment performance?
+
+## Project architecture
+
+```text
+Source Sales Data
+      │
+      ▼
+Mock data generator (Python)
+      │
+      ▼
+CSV export files
+      │
+      ▼
+PostgreSQL warehouse
+  ├─ DimDate
+  ├─ DimCustomer
+  ├─ DimProduct
+  └─ FactSales
+      │
+      ▼
+SQL reporting layer
+  └─ vw_sales_reporting
+      │
+      ▼
+Power BI dashboard
+```
+
+## Repository structure
+
+```text
+.
+├── README.md
+├── schema.sql
+├── reporting_view.sql
+├── dashboard_blueprint.md
+├── requirements.txt
+├── generate_mock_data.py
+├── load_data_postgres.sql
+└── data/
+    ├── DimDate.csv
+    ├── DimCustomer.csv
+    ├── DimProduct.csv
+    └── FactSales.csv
+```
+
+## Data model
+
+The warehouse follows a classic star schema:
+
+- Fact table: FactSales
+- Dimension tables: DimDate, DimCustomer, DimProduct
+
+### FactSales
+
+- OrderID
+- OrderDateKey
+- CustomerKey
+- ProductKey
+- CustomerSegment
+- OrderQuantity
+- SalesAmount
+- CostOfGoodsSold
+- FulfillmentStatus
+
+### Dimensions
+
+- DimDate: date, year, quarter, month, month number
+- DimCustomer: customer ID, region, country
+- DimProduct: SKU, product, category, unit price, cost, margin
+
+## Quick start
+
+### 1) Create a virtual environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+```
+
+### 2) Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3) Generate mock data
+
+```bash
+python generate_mock_data.py
+```
+
+This creates the following CSV files in the `data/` folder:
+
+- DimDate.csv
+- DimCustomer.csv
+- DimProduct.csv
+- FactSales.csv
+
+### 4) Create the PostgreSQL warehouse
+
+```bash
+psql -d ecommerce_dw -f schema.sql
+```
+
+### 5) Load the CSV files into PostgreSQL
+
+```bash
+psql -d ecommerce_dw -f load_data_postgres.sql
+```
+
+### 6) Create the reporting view
+
+```bash
+psql -d ecommerce_dw -f reporting_view.sql
+```
+
+## PostgreSQL data loading example
+
+The repo includes `load_data_postgres.sql` with `COPY` commands to load the generated CSVs.
+
+Example pattern:
+
+```sql
+COPY public."DimDate" ("DateKey", "Date", "Year", "Quarter", "Month", "MonthNo")
+FROM '/path/to/project/data/DimDate.csv'
+WITH (FORMAT csv, HEADER true);
+```
+
+## Power BI dashboard blueprint
+
+The dashboard concept includes four pages:
+
+### Page 1: Executive Overview
+- Total Revenue
+- Gross Profit
+- Gross Margin %
+- Revenue YoY %
+- Fulfillment Rate %
+- Revenue by month
+- Revenue by category
+- New vs returning customer mix
+- Revenue by country and region
+
+### Page 2: Product & Margin Analysis
+- Product profitability
+- Gross margin by product and category
+- Revenue vs COGS
+- Margin opportunities
+
+### Page 3: Customer Insights
+- Revenue by customer segment
+- New vs returning customer mix
+- Geographic performance
+- Revenue per customer
+
+### Page 4: Operations & Fulfillment
+- Fulfillment status by month
+- Pending vs shipped orders
+- Regional fulfillment trends
+
+## Core DAX measures
+
+```dax
+Total Revenue = SUM(FactSales[SalesAmount])
+Total COGS = SUM(FactSales[CostOfGoodsSold])
+Gross Profit = [Total Revenue] - [Total COGS]
+Gross Margin % = DIVIDE([Gross Profit], [Total Revenue], 0)
+Total Orders = DISTINCTCOUNT(FactSales[OrderID])
+Average Order Value = DIVIDE([Total Revenue], [Total Orders], 0)
+Prior Year Revenue = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(DimDate[Date]))
+Revenue YoY % =
+VAR CurrentRev = [Total Revenue]
+VAR PastRev = [Prior Year Revenue]
+RETURN
+    IF(ISBLANK(PastRev), BLANK(), DIVIDE(CurrentRev - PastRev, PastRev, 0))
+Fulfillment Rate % =
+DIVIDE(
+    CALCULATE(COUNTROWS(FactSales), FactSales[FulfillmentStatus] = "Shipped"),
+    COUNTROWS(FactSales),
+    0
+)
+```
+
+## Portfolio-ready outcome
+
+This project is structured to demonstrate:
+
+- analytical problem framing
+- dimensional modeling
+- mock data generation
+- relational database design
+- SQL reporting and validation
+- executive BI dashboard thinking
+
+## Next steps for portfolio use
+
+1. Load the generated CSVs into PostgreSQL.
+2. Validate dimensions and foreign keys.
+3. Build the reporting layer and confirm metrics.
+4. Connect Power BI to PostgreSQL.
+5. Design the executive dashboard pages.
+6. Capture screenshots and publish the final dashboard artifacts.
+7. Add the project to your portfolio with a short business summary and impact statement.
+
+## License
+
+This project is intended for learning, data portfolio showcase, and personal business intelligence experimentation.
+
+## Contact
+
+GitHub: @godmanluis
+
+---
+
+This repository is ready to be used as a polished e-commerce analytics portfolio project.

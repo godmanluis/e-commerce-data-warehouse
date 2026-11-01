@@ -1,0 +1,192 @@
+import csv
+import random
+from datetime import date, timedelta
+
+random.seed(42)
+
+START_DATE = date(2022, 1, 1)
+END_DATE = date(2024, 12, 31)
+REGIONS = {
+    "North America": ["United States", "Canada", "Mexico"],
+    "Europe": ["Germany", "United Kingdom", "France", "Spain"],
+    "Asia Pacific": ["Japan", "Singapore", "Australia", "India"],
+    "Latin America": ["Brazil", "Chile", "Argentina"],
+}
+CATEGORIES = [
+    "Electronics",
+    "Home & Living",
+    "Fashion",
+    "Health & Beauty",
+    "Sports",
+    "Office Supplies",
+]
+PRODUCT_TEMPLATES = {
+    "Electronics": ["Laptop", "Headphones", "Smartwatch", "Tablet", "Monitor"],
+    "Home & Living": ["Lamp", "Chair", "Desk Organizer", "Air Purifier", "Cookware Set"],
+    "Fashion": ["Sneakers", "Jacket", "Backpack", "Watch", "Sunglasses"],
+    "Health & Beauty": ["Skincare Set", "Hair Dryer", "Fitness Band", "Essential Oils", "Massage Gun"],
+    "Sports": ["Yoga Mat", "Treadmill", "Bike Bottle", "Soccer Ball", "Resistance Bands"],
+    "Office Supplies": ["Desk Lamp", "Notebook", "Keyboard", "Printer", "Monitor Stand"],
+}
+
+
+def daterange(start, end):
+    current = start
+    while current <= end:
+        yield current
+        current += timedelta(days=1)
+
+
+def write_csv(path, fieldnames, rows):
+    with open(path, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def generate_dim_date():
+    rows = []
+    for day in daterange(START_DATE, END_DATE):
+        date_key = int(day.strftime("%Y%m%d"))
+        rows.append(
+            {
+                "DateKey": date_key,
+                "Date": day.isoformat(),
+                "Year": day.year,
+                "Quarter": ((day.month - 1) // 3) + 1,
+                "Month": day.strftime("%B"),
+                "MonthNo": day.month,
+            }
+        )
+    return rows
+
+
+def generate_dim_customer():
+    rows = []
+    customer_id = 1
+    for customer in range(1, 251):
+        region = random.choice(list(REGIONS.keys()))
+        country = random.choice(REGIONS[region])
+        rows.append(
+            {
+                "CustomerKey": customer,
+                "CustomerID": f"CUST-{customer_id:05d}",
+                "Region": region,
+                "Country": country,
+            }
+        )
+        customer_id += 1
+    return rows
+
+
+def generate_dim_product():
+    rows = []
+    product_key = 1
+    for category in CATEGORIES:
+        for item in PRODUCT_TEMPLATES[category]:
+            base_cost = random.uniform(12, 150)
+            margin = round(random.uniform(0.18, 0.45), 4)
+            unit_price = round(base_cost / (1 - margin), 2)
+            rows.append(
+                {
+                    "ProductKey": product_key,
+                    "SKU": f"SKU-{product_key:05d}",
+                    "ProductName": item,
+                    "Category": category,
+                    "CostOfGoodsSold": round(base_cost, 2),
+                    "UnitPrice": round(unit_price, 2),
+                    "ProfitMargin": margin,
+                }
+            )
+            product_key += 1
+    return rows
+
+
+def generate_fact_sales(customers, products, dim_date):
+    rows = []
+
+    # Create a realistic distribution of order dates across 3 years
+    order_count = 8000
+    for order_id in range(1, order_count + 1):
+        order_date = random.choice(dim_date)
+        order_date_key = int(order_date["Date"].replace("-", ""))
+        customer_key = random.randint(1, len(customers))
+        product_key = random.randint(1, len(products))
+        product = products[product_key - 1]
+
+        quantity = random.randint(1, 8)
+        customer_segment = "New" if random.random() < 0.35 else "Returning"
+        unit_price = product["UnitPrice"]
+        base_cost = product["CostOfGoodsSold"]
+
+        sales_amount = round(unit_price * quantity, 2)
+        cogs = round(base_cost * quantity, 2)
+        fulfillment_status = random.choices(
+            ["Shipped", "Pending", "Cancelled"],
+            weights=[0.72, 0.18, 0.10],
+            k=1,
+        )[0]
+
+        rows.append(
+            {
+                "OrderID": f"ORD-{order_id:05d}",
+                "OrderDateKey": order_date_key,
+                "CustomerKey": customer_key,
+                "ProductKey": product_key,
+                "CustomerSegment": customer_segment,
+                "OrderQuantity": quantity,
+                "SalesAmount": sales_amount,
+                "CostOfGoodsSold": cogs,
+                "FulfillmentStatus": fulfillment_status,
+            }
+        )
+
+    return rows
+
+
+def main():
+    dim_date = generate_dim_date()
+    dim_customer = generate_dim_customer()
+    dim_product = generate_dim_product()
+    fact_sales = generate_fact_sales(dim_customer, dim_product, dim_date)
+
+    write_csv(
+        "data/DimDate.csv",
+        ["DateKey", "Date", "Year", "Quarter", "Month", "MonthNo"],
+        dim_date,
+    )
+    write_csv(
+        "data/DimCustomer.csv",
+        ["CustomerKey", "CustomerID", "Region", "Country"],
+        dim_customer,
+    )
+    write_csv(
+        "data/DimProduct.csv",
+        ["ProductKey", "SKU", "ProductName", "Category", "CostOfGoodsSold", "UnitPrice", "ProfitMargin"],
+        dim_product,
+    )
+    write_csv(
+        "data/FactSales.csv",
+        [
+            "OrderID",
+            "OrderDateKey",
+            "CustomerKey",
+            "ProductKey",
+            "CustomerSegment",
+            "OrderQuantity",
+            "SalesAmount",
+            "CostOfGoodsSold",
+            "FulfillmentStatus",
+        ],
+        fact_sales,
+    )
+
+    print(f"Generated {len(dim_date)} date rows")
+    print(f"Generated {len(dim_customer)} customer rows")
+    print(f"Generated {len(dim_product)} product rows")
+    print(f"Generated {len(fact_sales)} sales rows")
+
+
+if __name__ == "__main__":
+    main()
+
