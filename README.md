@@ -4,9 +4,12 @@ A portfolio-ready analytics project that builds a star-schema data warehouse for
 
 ## 📊 Live Project Links
 [![Power BI](https://shields.io/badge/Power%20BI-Report-FFB000?logo=microsoftpowerpoint&logoColor=white)](https://app.powerbi.com/view?r=YOUR_PUBLIC_REPORT_URL)
-[![Notion Portfolio](https://shields.io/badge/Portfolio-Notion-000000?logo=notion&logoColor=white)](YOUR_NOTION_PORTFOLIO_URL)
+[![Notion Portfolio](https://shields.io/badge/Portfolio-Notion-000000?logo=notion&logoColor=white
 
----
+
+https://messy-innocent-054.notion.site/Engineering-Portfolio-Emmanuel-G-LOUIS-c4da9e4903ca42c2b0ecbe02ee15dfa0
+
+
 
 ## 📌 Executive Summary
 
@@ -373,7 +376,9 @@ Business applications include:
 
 This project is designed to showcase end-to-end analytics capability and is suitable for portfolio presentation, BI applications, and case studies.
 
----
+
+https://messy-innocent-054.notion.site/Engineering-Portfolio-Emmanuel-G-LOUIS-c4da9e4903ca42c2b0ecbe02ee15dfa0
+
 
 ## 👤 Author
 
